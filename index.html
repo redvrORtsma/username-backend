@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Username Checker</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    input {
+      padding: 8px;
+      font-size: 16px;
+    }
+    button {
+      padding: 8px 12px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .found { color: green; }
+    .notfound { color: red; }
+  </style>
+</head>
+<body>
+
+<h2>Username Checker</h2>
+
+<input id="username" placeholder="Enter username">
+<button onclick="checkUsername()">Search</button>
+
+<ul id="results"></ul>
+
+<script>
+function checkUsername() {
+  const user = document.getElementById("username").value;
+  const results = document.getElementById("results");
+  results.innerHTML = "Checking...";
+
+  fetch("https://username-backend-o4qq.onrender.com" + user)
+    .then(res => res.json())
+    .then(data => {
+      results.innerHTML = "";
+      data.forEach(item => {
+        const li = document.createElement("li");
+        li.className = item.found ? "found" : "notfound";
+        li.innerHTML =
+          `${item.site}: ${item.found ? "✅ Found" : "❌ Not Found"}
+           <a href="${item.url}" target="_blank">Visit</a>`;
+        results.appendChild(li);
+      });
+    });
+}
+</script>
+
+</body>
+</html>
