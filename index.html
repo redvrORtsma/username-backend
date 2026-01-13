@@ -4,26 +4,44 @@
   <title>Username Checker</title>
   <style>
     body {
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       background: #f4f4f4;
-      padding: 20px;
+      padding: 30px;
+      text-align: center;
     }
     input {
-      padding: 8px;
+      padding: 10px;
       font-size: 16px;
+      width: 250px;
     }
     button {
-      padding: 8px 12px;
+      padding: 10px 15px;
       font-size: 16px;
       cursor: pointer;
+      margin-left: 10px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+    li {
+      margin: 10px 0;
+      font-size: 18px;
     }
     .found { color: green; }
     .notfound { color: red; }
+    a {
+      margin-left: 10px;
+      font-size: 14px;
+      text-decoration: none;
+    }
   </style>
 </head>
 <body>
 
-<h2>Username Checker</h2>
+<h1>Username Checker</h1>
+<p>Type a username to check multiple sites:</p>
 
 <input id="username" placeholder="Enter username">
 <button onclick="checkUsername()">Search</button>
@@ -32,22 +50,30 @@
 
 <script>
 function checkUsername() {
-  const user = document.getElementById("username").value;
+  const user = document.getElementById("username").value.trim();
   const results = document.getElementById("results");
+  
+  if (!user) {
+    results.innerHTML = "Please enter a username.";
+    return;
+  }
+
   results.innerHTML = "Checking...";
 
-  fetch("https://username-backend-o4qq.onrender.com" + user)
+  fetch("https://username-backend-o4qq.onrender.com/check/" + user)
     .then(res => res.json())
     .then(data => {
       results.innerHTML = "";
       data.forEach(item => {
         const li = document.createElement("li");
         li.className = item.found ? "found" : "notfound";
-        li.innerHTML =
-          `${item.site}: ${item.found ? "✅ Found" : "❌ Not Found"}
-           <a href="${item.url}" target="_blank">Visit</a>`;
+        li.innerHTML = `${item.site}: ${item.found ? "✅ Found" : "❌ Not Found"} <a href="${item.url}" target="_blank">Visit</a>`;
         results.appendChild(li);
       });
+    })
+    .catch(err => {
+      results.innerHTML = "Error connecting to backend.";
+      console.error(err);
     });
 }
 </script>
