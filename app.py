@@ -6,20 +6,45 @@ import os
 app = Flask(__name__)
 CORS(app)
 
+SITES = {
+    "GitHub": {
+        "url": "https://github.com/{}",
+        "not_found": "Not Found"
+    },
+    "Twitter": {
+        "url": "https://twitter.com/{}",
+        "not_found": "This account doesn’t exist"
+    },
+    "Reddit": {
+        "url": "https://www.reddit.com/user/{}",
+        "not_found": "Sorry, nobody on Reddit goes by that name"
+    },
+    "Instagram": {
+        "url": "https://www.instagram.com/{}/",
+        "not_found": "Sorry, this page isn't available"
+    },
+    "TikTok": {
+        "url": "https://www.tiktok.com/@{}",
+        "not_found": "Couldn't find this account"
+    }
+}
+
 @app.route("/check/<username>")
 def check(username):
-    sites = {
-        "GitHub": f"https://github.com/{username}",
-        "Twitter": f"https://twitter.com/{username}",
-        "Reddit": f"https://reddit.com/user/{username}"
-    }
-
     results = []
 
-    for site, url in sites.items():
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
+
+    for site, data in SITES.items():
+        url = data["url"].format(username)
+        found = False
+
         try:
-            r = requests.get(url, timeout=5)
-            found = r.status_code == 200
+            r = requests.get(url, headers=headers, timeout=7)
+            if r.status_code == 200 and data["not_found"] not in r.text:
+                found = True
         except:
             found = False
 
