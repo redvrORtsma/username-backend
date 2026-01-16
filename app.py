@@ -17,7 +17,7 @@ SITES = {
     },
     "Reddit": {
         "url": "https://www.reddit.com/user/{}",
-        "not_found": "Sorry, nobody on Reddit goes by that name"
+        "not_found": "nobody on Reddit goes by that name"
     },
     "Instagram": {
         "url": "https://www.instagram.com/{}/",
@@ -26,16 +26,25 @@ SITES = {
     "TikTok": {
         "url": "https://www.tiktok.com/@{}",
         "not_found": "Couldn't find this account"
+    },
+    "YouTube": {
+        "url": "https://www.youtube.com/@{}",
+        "not_found": "This channel does not exist"
+    },
+    "Steam": {
+        "url": "https://steamcommunity.com/id/{}",
+        "not_found": "The specified profile could not be found"
+    },
+    "Twitch": {
+        "url": "https://www.twitch.tv/{}",
+        "not_found": "Sorry. Unless you’ve got a time machine"
     }
 }
 
 @app.route("/check/<username>")
 def check(username):
     results = []
-
-    headers = {
-        "User-Agent": "Mozilla/5.0"
-    }
+    headers = {"User-Agent": "Mozilla/5.0"}
 
     for site, data in SITES.items():
         url = data["url"].format(username)
@@ -43,7 +52,7 @@ def check(username):
 
         try:
             r = requests.get(url, headers=headers, timeout=7)
-            if r.status_code == 200 and data["not_found"] not in r.text:
+            if r.status_code == 200 and data["not_found"].lower() not in r.text.lower():
                 found = True
         except:
             found = False
