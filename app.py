@@ -15,6 +15,13 @@ SITES = {
     "YouTube": {"url": "https://www.youtube.com/@{}", "not_found": "This channel does not exist"},
     "Steam": {"url": "https://steamcommunity.com/id/{}", "not_found": "The specified profile could not be found"},
     "Twitch": {"url": "https://www.twitch.tv/{}", "not_found": "Sorry. Unless you’ve got a time machine"}
+    "Pinterest": {"url": "https://www.pinterest.com/{}/", "not_found": "This account doesn’t exist"}
+    "SoundCloud": {"url": "https://soundcloud.com/{}", "not_found": "We can’t find that page"}
+    "deviantArt": {"url": "https://www.deviantart.com/{}", "not_found": "Llama Not Found"}
+    "XboxGamerTag": {"url": "https://xboxgamertag.com/search/{}", "not_found": "Gamertag doesn't exist"}
+    "Spotify": {"url": "https://open.spotify.com/user/{}", "not_found": "Couldn't find that page"}
+    "Vimeo": {"url": "https://vimeo.com/{}", "not_found": "Sorry, we couldn’t find that page"}
+    "SnapChat": {"url": "https://www.snapchat.com/@{}", "not_found": "Sorry,"}
 }
 
 @app.route("/")
@@ -48,3 +55,4 @@ def check(username):
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
