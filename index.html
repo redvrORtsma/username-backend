@@ -69,27 +69,33 @@ function checkUsername() {
   results.innerHTML = "";
   loader.style.display = "block";
 
-  fetch("https://username-backend-o4qq.onrender.com" + user)
-    .then(res => res.json())
-    .then(data => {
-      loader.style.display = "none";
-      data.forEach(item => {
-        const li = document.createElement("li");
-        li.className = item.found ? "found" : "notfound";
-        li.innerHTML =
-          `${item.site}: ${item.found ? "✅ Found" : "❌ Not Found"}
-           <a href="${item.url}" target="_blank">Visit</a>`;
-        results.appendChild(li);
-      });
-    })
-    .catch(err => {
-      loader.style.display = "none";
-      results.innerHTML = "Error connecting to backend.";
-      console.error(err);
+ fetch(`https://username-backend-o4qq.onrender.com/check/${encodeURIComponent(user)}`)
+  .then(res => {
+    if (!res.ok) {
+      throw new Error("Server error: " + res.status);
+    }
+    return res.json();
+  })
+  .then(data => {
+    loader.style.display = "none";
+    data.forEach(item => {
+      const li = document.createElement("li");
+      li.className = item.found ? "found" : "notfound";
+      li.innerHTML =
+        `${item.site}: ${item.found ? "✅ Found" : "❌ Not Found"}
+         <a href="${item.url}" target="_blank">Visit</a>`;
+      results.appendChild(li);
     });
+  })
+  .catch(err => {
+    loader.style.display = "none";
+    results.innerHTML = "<li>Error connecting to backend.</li>";
+    console.error("FETCH ERROR:", err);
+  });
 }
 </script>
 
 </body>
 </html>
+
 
